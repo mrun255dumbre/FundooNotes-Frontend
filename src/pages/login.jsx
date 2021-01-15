@@ -2,14 +2,22 @@ import React, { useState, useEffect, useContext } from 'react';
 import logo from '../assets/images/logo.png';
 import './login.scss';
 import { useParams, Link, withRouter } from 'react-router-dom';
-import { AppContext } from '../appContext';
+import { AppContext } from '../utils/AppContext';
 import userService from '../services/user-service';
 
 const Login = (props) => {
     const {user, setUser} = useContext(AppContext);
     const [loginData, setLoginData] = useState({});
     const {history} = props;
+
+    useEffect(()=>{
+      if(user){
+        history.push("/")
+      }
+    },[user]);
+
     const formSubmit = () => {
+
         if(!loginData.email){ 
             window.alert("please enter email address");
             return;
@@ -20,9 +28,8 @@ const Login = (props) => {
         }
         
         userService.login(loginData).then(response => {
-            console.log("hi",response.data);
-            if(response.data !== ''){
-                setUser(response.data);
+            if(response.data.data){
+                setUser(response.data.data);
                 history.push('/');
             } else{
                 window.alert("Please enter correct username and password");

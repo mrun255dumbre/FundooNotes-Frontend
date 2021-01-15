@@ -3,17 +3,21 @@ import AxiosService from './axios-service'
 
 class UserService {
     baseUrl = config.baseUrl;
-    
-    async registration(data){
+
+    async registration(data) {
         return await AxiosService.postService(`${this.baseUrl}signup`, data);
     }
 
-    async login(data){
-        return await AxiosService.postService(`${this.baseUrl}login`, data);
+    async login(data) {
+        return await AxiosService.postService(`${this.baseUrl}signin`, data);
     }
 
-    async forgotPassword(data){
+    async forgotPassword(data) {
         return await AxiosService.postService(`${this.baseUrl}forgotpassword`, data);
+    }
+
+    async resetPassword(token, password) {
+        return await AxiosService.putService(`${this.baseUrl}resetpassword/`+token, { token, password });
     }
 }
 

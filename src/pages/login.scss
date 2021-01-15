@@ -153,6 +153,10 @@ input:focus + label, input:not(:placeholder-shown) + label {
     margin-top: 20px;
 }
 
+.justify-center{
+    justify-content: center;
+}
+
 @media only screen and (max-width: 420px){
     .form{ 
         width: 70%;

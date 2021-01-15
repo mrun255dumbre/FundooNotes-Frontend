@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import logo from '../assets/images/logo.png';
 import './login.scss';
 import { withRouter } from 'react-router-dom';
-import { AppContext } from '../appContext';
+import { AppContext } from '../utils/AppContext';
 
 const Home = (props) => {
     const {user, setUser} = useContext(AppContext);
@@ -16,7 +16,6 @@ const Home = (props) => {
             <div className="form-content">
                 <div className="form">
                     <h2>Login Successful!</h2>
-                    
                 </div>
             </div>
         </>

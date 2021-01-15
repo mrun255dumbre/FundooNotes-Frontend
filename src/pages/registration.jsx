@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import logo from '../assets/images/logo.png';
 import './login.scss';
 import { Link, withRouter } from 'react-router-dom';
 import userService from '../services/user-service';
+import { AppContext } from '../utils/AppContext';
 
 const Registration = (props) => {   
+    const {user, setUser} = useContext(AppContext);
     const {history} = props;
     let initialValue = {
         username: '',
@@ -18,6 +20,13 @@ const Registration = (props) => {
             phoneNumber: ''
         }
     }
+
+    useEffect(()=>{
+        if(user){
+          history.push("/")
+        }
+      },[user]);
+
     const [registrationData, setRegistrationData] = useState(initialValue);
     const validData = async () => {
         let isError = false;
@@ -30,7 +39,7 @@ const Registration = (props) => {
         const usernameRegex = '^[A-Z][a-zA-Z]{2,}([ ][A-Z]([a-z]{1,})*)*$';
         const phoneNumberRegex = RegExp('^([\+]?[0-9]{2})?[-\.]?[ ]?[0-9]{10}$');
         const emailRegex = RegExp('^([a-zA-Z0-9]+[+_.-]?[a-zA-Z0-9]+)+@[a-zA-Z0-9-]+.[a-z]{2,3}.[a-z]{2,3}$');
-        const passwordRegex = RegExp('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#$%^&-+=]).{8,}$');
+        const passwordRegex = RegExp('^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@#$%^&-+=]).{8,20}$');
 
         if (registrationData.username.length < 1) {
             error.username = 'Username is required field';
@@ -75,12 +84,11 @@ const Registration = (props) => {
         }
 
         userService.registration(registrationData).then(response => {
-            console.log("Response message ",response.data.message);
-            if(response.status === 200){
+            if(response.data.data){
                 window.alert("Registration Successful!");
                 history.push('/login');
             } else{
-                window.alert("Registration failed!");
+                window.alert(response.data.message);
             }
         })  
     }       

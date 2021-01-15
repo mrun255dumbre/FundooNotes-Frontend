@@ -4,7 +4,7 @@ import './login.scss';
 import { Link, withRouter } from 'react-router-dom';
 import userService from '../services/user-service';
 
-const ResetPassword = (props) => {
+const ForgotPassword = (props) => {
     const [userData, setuserData] = useState({});
     const {history} = props;
     const formSubmit = () => {
@@ -13,8 +13,8 @@ const ResetPassword = (props) => {
             return;
         }
         
-        userService.resetPassword(userData).then(response => {
-            if(response.data.data){
+        userService.forgotPassword(userData).then(response => {
+            if(response.data){
                 window.alert("Password reset link sent to your email");
                 history.push('/login');
             } else{
@@ -32,18 +32,14 @@ const ResetPassword = (props) => {
             </div>
             <div className="form-content">
                 <div className="form">
-                    <h2>Reset Password</h2>
+                    <h2>Forgot Password</h2>
                     <div className="formContent">
                         <div className="row-content">
                             <input type="text" name="email" value={userData.email || ''} onChange={event => {setuserData({...userData, email:event.target.value})}} placeholder=" " required/>
                             <label>Email</label>
                         </div>
-                        <div className="row-content">
-                            <input type="text" name="email" value={userData.password || ''} onChange={event => {setuserData({...userData, password:event.target.value})}} placeholder=" " required/>
-                            <label>New Password</label>
-                        </div>
                         <div className="submit-button">
-                            <button onClick={formSubmit} className="button">Reset Password</button>
+                            <button onClick={formSubmit} className="button">Submit</button>
                         </div>
                     </div>
                     <div className="row-button">
@@ -55,4 +51,4 @@ const ResetPassword = (props) => {
     )
 }
 
-export default withRouter(ResetPassword);
+export default withRouter(ForgotPassword);
