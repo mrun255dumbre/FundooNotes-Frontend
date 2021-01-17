@@ -4,6 +4,7 @@ import './login.scss';
 import { useParams, Link, withRouter } from 'react-router-dom';
 import { AppContext } from '../utils/AppContext';
 import userService from '../services/user-service';
+import axiosService from '../services/axios-service';
 
 const Login = (props) => {
     const {user, setUser} = useContext(AppContext);
@@ -30,6 +31,7 @@ const Login = (props) => {
         userService.login(loginData).then(response => {
             if(response.data.data){
                 setUser(response.data.data);
+                axiosService.setToken(response.data.data)
                 history.push('/');
             } else{
                 window.alert("Please enter correct username and password");

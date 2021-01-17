@@ -1,5 +1,4 @@
 import EmojiObjectsOutlinedIcon from '@material-ui/icons/EmojiObjectsOutlined';
-import NotificationsNoneOutlinedIcon from '@material-ui/icons/NotificationsNoneOutlined';
 import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
 
@@ -11,15 +10,9 @@ export const menu = [
         icon: () => <EmojiObjectsOutlinedIcon />
     },
     {
-        key: "menu_reminders",
-        label: "Reminders",
-        link: "/reminders",
-        icon: () => <NotificationsNoneOutlinedIcon />
-    },
-    {
         key: "menu_archive",
-        label: "Archive",
-        link: "/archive",
+        label: "Archived",
+        link: "/archived",
         icon: () => <ArchiveOutlinedIcon />
     },
     {

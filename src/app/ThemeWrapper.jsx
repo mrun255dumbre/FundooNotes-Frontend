@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -23,6 +23,8 @@ import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { AppContext } from '../utils/AppContext';
 import { NavLink, useHistory } from "react-router-dom";
 import { menu } from '../utils/menu';
+import { ViewTypes } from '../utils/constants';
+import AppsIcon from '@material-ui/icons/Apps';
 
 const drawerWidth = 240;
 
@@ -32,6 +34,8 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    background: "#fff",
+    color: "#000",
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -112,6 +116,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     color: "#fff",
     cursor: "pointer"
+  },
+  selectedMenu: {
+    backgroundColor: "#feefc3",
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20
   }
 }));
 
@@ -119,11 +128,12 @@ const ThemeWrapper = ({ children }) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const { user, logout } = useContext(AppContext);
+  const { user, logout, viewType, setViewType } = useContext(AppContext);
+  const [selectedMenu, setSelectedMenu] = useState(menu[0].key)
   let history = useHistory();
 
   const handleDrawerOpen = () => {
-    setOpen(true);
+    setOpen(!open);
   };
 
   const handleDrawerClose = () => {
@@ -139,15 +149,19 @@ const ThemeWrapper = ({ children }) => {
     <NavLink to={props.to} {...props} innerRef={ref} exact />
   ));
 
+  const changeViewType = () => {
+    viewType === ViewTypes.Grid ? setViewType(ViewTypes.List) : setViewType(ViewTypes.Grid)
+  }
+
+  const currentMenu = menu.find(item => item.key === selectedMenu);
+  const pageHeader = currentMenu.key === menu[0].key ? null : currentMenu.label;
+
   return (
     <div className={classes.root}>
       <CssBaseline />
       <AppBar
-        color="#fff"
         position="fixed"
-        className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+        className={clsx(classes.appBar)}
       >
         <Toolbar>
           <IconButton
@@ -155,26 +169,29 @@ const ThemeWrapper = ({ children }) => {
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
-            className={clsx(classes.menuButton, {
-              [classes.hide]: open,
-            })}
+            className={clsx(classes.menuButton)}
           >
             <MenuIcon />
           </IconButton>
-          <img src={KeepLogo} alt="logo" />
-          <Typography variant="h6" noWrap>
-            Fundoo Note
-          </Typography>
+          {pageHeader ?
+            <Typography variant="h5">{pageHeader}</Typography> :
+            <>
+              <img src={KeepLogo} alt="logo" />
+              <Typography variant="h6" noWrap>
+                Fundoo Note
+              </Typography>
+            </>
+          }
           <SearchBar className={classes.searchBar}
             onChange={() => { }}
             onRequestSearch={() => console.log('onRequestSearch')} />
           <div className={classes.toolbarIcons}>
-            <ViewStreamIcon className={classes.toolbarIcon} />
-            <RefreshIcon className={classes.toolbarIcon} />
+            {viewType === ViewTypes.Grid ? <ViewStreamIcon className={classes.toolbarIcon} onClick={changeViewType} /> : <AppsIcon className={classes.toolbarIcon} onClick={changeViewType} />}
+            <RefreshIcon className={classes.toolbarIcon} onClick={() => window.location.reload()} />
             <SettingsOutlinedIcon className={classes.toolbarIcon} />
-          
+
             <div className={classes.userProfile} onClick={clearUserData}>{user && user.username && user.username.charAt(0).toUpperCase()}</div>
-          </div> 
+          </div>
         </Toolbar>
       </AppBar>
       <Drawer
@@ -199,9 +216,13 @@ const ThemeWrapper = ({ children }) => {
         <List>
           {menu.map(({ key, label, link, icon: Icon }) => (
             <ListItem
+              className={clsx({
+                [classes.selectedMenu]: selectedMenu === key
+              })}
               button
               key={key}
               component={LinkBtn}
+              onClick={() => setSelectedMenu(key)}
               to={link || ""}>
               <ListItemIcon><Icon /></ListItemIcon>
               <ListItemText primary={label} />
