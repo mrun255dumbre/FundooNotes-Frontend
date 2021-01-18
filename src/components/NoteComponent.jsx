@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Card from '@material-ui/core/Card';
 import { CardHeader, CardContent, CardActions, Tooltip, makeStyles, Dialog, DialogContentText, DialogActions, Button, DialogTitle, InputBase } from '@material-ui/core';
 import IconButton from '@material-ui/core/IconButton';
 import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
+import UnarchiveOutlinedIcon from '@material-ui/icons/UnarchiveOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 import Unpin from '../assets/icons/pin.svg';
@@ -11,6 +12,8 @@ import noteService from '../services/note-service';
 import RestoreFromTrashIcon from '@material-ui/icons/RestoreFromTrash';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DialogContent from '@material-ui/core/DialogContent';
+import Typography from '@material-ui/core/Typography';
+import { AppContext } from '../utils/AppContext';
 
 const useStyles = makeStyles((theme) => ({
     cardIcons: {
@@ -31,6 +34,7 @@ const NoteComponent = props => {
     const classes = useStyles();
     const { noteId, title, description, pin, trash, archive, getNoteData } = props;
     const [actionsVisibility, setActionsVisibility] = useState(false);
+    const { handleClick } = useContext(AppContext);
     const [editDialog, setEditDialog] = useState({
         visible: false,
         noteId: '',
@@ -48,21 +52,36 @@ const NoteComponent = props => {
     }
 
     const archiveNote = () => {
-        noteService.archiveNote(noteId).then(() => {
+        noteService.archiveNote(noteId).then(data => {
             getNoteData();
-        })
+            handleClick(data.data.message);
+        }).catch((error) => {
+            if (error.response){
+              handleClick(error.response.data.data);
+            }  
+        })   
     }
 
     const trashNote = () => {
-        noteService.trashNote(noteId).then(() => {
+        noteService.trashNote(noteId).then(data => {
             getNoteData();
-        })
+            handleClick(data.data.message);
+        }).catch((error) => {
+            if (error.response){
+              handleClick(error.response.data.data);
+            }  
+        })  
     }
 
     const deleteForEver = () => {
-        noteService.deleteForEver(noteId).then(() => {
+        noteService.deleteForEver(noteId).then(data => {
             getNoteData();
-        })
+            handleClick(data.data.message);
+        }).catch((error) => {
+            if (error.response){
+              handleClick(error.response.data.data);
+            }  
+        })  
     }
 
     const handleSave = () => {
@@ -87,15 +106,12 @@ const NoteComponent = props => {
             <Card
                 onMouseEnter={() => setActionsVisibility(true)}
                 onMouseLeave={() => setActionsVisibility(false)}>
-                <CardHeader
-                    title={title}
-                    action={
-                        <IconButton aria-label="settings" onClick={pinNote}>
-                            <img src={pin ? Pin : Unpin} alt="pin" />
-                        </IconButton>
-                    }
-                    onClick={() => setEditDialog({ ...editDialog, noteId, title, description, pin, trash, archive, visible: true })}
-                />
+                <CardContent style={{display:'flex'}}>
+                <Typography variant="h6" style={{flex:1}} onClick={() => setEditDialog({ ...editDialog, noteId, title, description, pin, trash, archive, visible: true })}>{title}</Typography>
+                    <IconButton aria-label="settings" onClick={pinNote} style={{justifyContent:'flex-end'}}>
+                        <img src={pin ? Pin : Unpin} alt="pin" />
+                    </IconButton>
+                </CardContent>
                 <CardContent onClick={() => setEditDialog({ ...editDialog, noteId, title, description, pin, trash, archive, visible: true })}>
                     {description}
                 </CardContent>
@@ -117,7 +133,7 @@ const NoteComponent = props => {
                         : <>
                             <Tooltip title={archive ? "Unarchive" : "Archive"}>
                                 <IconButton onClick={archiveNote}>
-                                    <ArchiveOutlinedIcon className={classes.cardIcons} style={{ visibility: actionsVisibility ? 'visible' : 'hidden' }} />
+                                    {archive ? <UnarchiveOutlinedIcon className={classes.cardIcons} style={{ visibility: actionsVisibility ? 'visible' : 'hidden' }} /> : <ArchiveOutlinedIcon className={classes.cardIcons} style={{ visibility: actionsVisibility ? 'visible' : 'hidden' }} /> }
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title={"Delete"}>

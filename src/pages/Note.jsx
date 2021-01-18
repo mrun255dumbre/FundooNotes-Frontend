@@ -31,8 +31,9 @@ const Note = () => {
     }, [user])
 
     const gridXS = viewType === ViewTypes.List ? 12 : 6;
-    const gridMD = viewType === ViewTypes.List ? 12 : 3;
-
+    const gridMD = viewType === ViewTypes.List ? 7 : 3;
+    const gridJustify = viewType === ViewTypes.List ? 'center' : 'left';
+    const gridAlign = viewType === ViewTypes.List ? 'center' : 'left';
 
     const hasPinnedItems = notes.some(item => item.pin);
 
@@ -44,8 +45,8 @@ const Note = () => {
             <Grid item xs={12}>
                 {hasPinnedItems &&
                     <div>
-                        <Typography className={classes.sectionTitle}>PINNED</Typography>
-                        <Grid container spacing={3}>
+                        <Typography className={classes.sectionTitle} align={gridAlign}>PINNED</Typography>
+                        <Grid container spacing={3} justify={gridJustify}>
                             {notes.filter(item => item.pin && !item.trash && !item.archive).map(note =>
                                 <Grid item xs={gridXS} md={gridMD} key={`${note.noteId}`}>
                                     <NoteComponent
@@ -62,8 +63,8 @@ const Note = () => {
                         </Grid>
                     </div>
                 }
-                {hasPinnedItems && <Typography className={classes.sectionTitle}>OTHERS</Typography>}
-                <Grid container spacing={3}>
+                {hasPinnedItems && <Typography className={classes.sectionTitle} align={gridAlign}>OTHERS</Typography>}
+                <Grid container spacing={3} justify={gridJustify}>
                     {notes.filter(item => !item.pin && !item.trash && !item.archive).map(note =>
                         <Grid item xs={gridXS} md={gridMD} key={`${note.noteId}`}>
                             <NoteComponent
@@ -80,6 +81,7 @@ const Note = () => {
                 </Grid>
             </Grid>
         </Grid>
+        
     );
 }
 

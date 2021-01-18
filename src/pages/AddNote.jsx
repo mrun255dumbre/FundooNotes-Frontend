@@ -76,7 +76,7 @@ export default class AddNote extends React.PureComponent {
     sendNote = (note) => {
         noteService.createNote(note).then(response => {
             if (response.status === 200) {
-                alert("note Created");
+                //alert("note Created");
                 note.noteId = response.data.noteId;
                 this.props.getNoteData();
             }
@@ -132,15 +132,17 @@ export default class AddNote extends React.PureComponent {
                     </div>
                     <InputBase name='description' multiline fullWidth placeholder='Take a note..' onChange={this.handleInput} />
                     <div className='takenote-bottom-icons-div'>
-                        <div className='note-icon-div' role='Button' onClick={this.handlearchive}>
-                            <img src={this.state.archive === 1 ? trash : trash} alt="" />
-                        </div>
-                        <div className='note-icon-div' role='Button' onClick={this.handlearchive}>
-                            <img src={this.state.archive === 1 ? unarchive : archive} alt="" />
-                        </div>
-                        <div className='note-icon-div' role='Button'>
-                            <img src={more} alt="" />
-                        </div>
+                        <div className="take-note-icon-div">
+                            <div className='note-icon-div' role='Button' onClick={this.handlearchive}>
+                                <img src={this.state.archive === 1 ? trash : trash} alt="" />
+                            </div>
+                            <div className='note-icon-div' role='Button' onClick={this.handlearchive}>
+                                <img src={this.state.archive === 1 ? unarchive : archive} alt="" />
+                            </div>
+                            <div className='note-icon-div' role='Button'>
+                                <img src={more} alt="" />
+                            </div>
+                        </div>    
                         <Button className='card-button-close' component="span" onClick={this.handleTakeNote}>
                             Close
                         </Button>

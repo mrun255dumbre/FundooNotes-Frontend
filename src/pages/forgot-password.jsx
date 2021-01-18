@@ -3,9 +3,11 @@ import logo from '../assets/images/logo.png';
 import './login.scss';
 import { Link, withRouter } from 'react-router-dom';
 import userService from '../services/user-service';
+import { AppContext } from '../utils/AppContext';
 
 const ForgotPassword = (props) => {
     const [userData, setuserData] = useState({});
+    const {handleClick} = useContext(AppContext);
     const {history} = props;
     const formSubmit = () => {
         if(!userData.email){ 
@@ -20,8 +22,13 @@ const ForgotPassword = (props) => {
             } else{
                 window.alert("Please enter correct Email");
             }
-        })
-        
+        }).catch((error) => {
+            if (error.response){
+              handleClick(error.response.data.data);
+            }  
+            else
+              handleClick("Please try again");
+          }) 
     }   
     return (
         <>
@@ -35,7 +42,7 @@ const ForgotPassword = (props) => {
                     <h2>Forgot Password</h2>
                     <div className="formContent">
                         <div className="row-content">
-                            <input type="text" name="email" value={userData.email || ''} onChange={event => {setuserData({...userData, email:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="text" name="email" value={userData.email || ''} onChange={event => {setuserData({...userData, email:event.target.value})}} placeholder=" " required/>
                             <label>Email</label>
                         </div>
                         <div className="submit-button">

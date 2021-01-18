@@ -7,7 +7,7 @@ import userService from '../services/user-service';
 import axiosService from '../services/axios-service';
 
 const Login = (props) => {
-    const {user, setUser} = useContext(AppContext);
+    const {user, setUser, handleClick} = useContext(AppContext);
     const [loginData, setLoginData] = useState({});
     const {history} = props;
 
@@ -29,6 +29,7 @@ const Login = (props) => {
         }
         
         userService.login(loginData).then(response => {
+            console.log("response",response);
             if(response.data.data){
                 setUser(response.data.data);
                 axiosService.setToken(response.data.data)
@@ -36,8 +37,13 @@ const Login = (props) => {
             } else{
                 window.alert("Please enter correct username and password");
             }
-        })
-        
+        }).catch((error) => {
+            if (error.response){
+              handleClick(error.response.data.data);
+            }  
+            else
+              handleClick("Please try again");
+          })  
     }   
     return (
         <>
@@ -51,11 +57,11 @@ const Login = (props) => {
                     <h2>Sign In</h2>
                     <div className="formContent">
                         <div className="row-content">
-                            <input type="text" name="email" value={loginData.email || ''} onChange={event => {setLoginData({...loginData, email:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="text" name="email" value={loginData.email || ''} onChange={event => {setLoginData({...loginData, email:event.target.value})}} placeholder=" " required/>
                             <label>Email</label>
                         </div>
                         <div className="row-content">
-                            <input type="password" name="password" value={loginData.password || ''} onChange={event => {setLoginData({...loginData, password:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="password" name="password" value={loginData.password || ''} onChange={event => {setLoginData({...loginData, password:event.target.value})}} placeholder=" " required/>
                             <label>Password</label>
                         </div>
                         <div className="submit-button">

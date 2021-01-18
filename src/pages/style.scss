@@ -36,14 +36,20 @@ body{
   .takenote-bottom-icons-div {
     display: flex;
     cursor: pointer;
-    justify-content: space-between;
     padding: 3px;
     bottom: 0;
     width: 100%;
   }
   
+  .take-note-icon-div{
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+  }
   
   .card-button-close{
+    flex: 1;
+    justify-content: flex-end !important;
     float: right;
   }
   
@@ -92,6 +98,7 @@ body{
   .note-icon-div{
     cursor: pointer;
     opacity:0.5 ;
+    padding-right: 5%;
   }
   .note-icon-div img{
     height: 20px;

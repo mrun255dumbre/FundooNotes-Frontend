@@ -18,13 +18,13 @@ import ListItemText from '@material-ui/core/ListItemText';
 import KeepLogo from '../assets/icons/keeplogo.png';
 import SearchBar from 'material-ui-search-bar';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import ViewStreamIcon from '@material-ui/icons/ViewStream';
+import listview from '../assets/icons/listview.svg';
+import gridview from '../assets/icons/gridview.svg';
 import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { AppContext } from '../utils/AppContext';
 import { NavLink, useHistory } from "react-router-dom";
 import { menu } from '../utils/menu';
 import { ViewTypes } from '../utils/constants';
-import AppsIcon from '@material-ui/icons/Apps';
 
 const drawerWidth = 240;
 
@@ -186,7 +186,7 @@ const ThemeWrapper = ({ children }) => {
             onChange={() => { }}
             onRequestSearch={() => console.log('onRequestSearch')} />
           <div className={classes.toolbarIcons}>
-            {viewType === ViewTypes.Grid ? <ViewStreamIcon className={classes.toolbarIcon} onClick={changeViewType} /> : <AppsIcon className={classes.toolbarIcon} onClick={changeViewType} />}
+            {viewType === ViewTypes.Grid ? <img src={listview} className={classes.toolbarIcon} onClick={changeViewType} /> : <img src={gridview} className={classes.toolbarIcon} onClick={changeViewType} />}
             <RefreshIcon className={classes.toolbarIcon} onClick={() => window.location.reload()} />
             <SettingsOutlinedIcon className={classes.toolbarIcon} />
 

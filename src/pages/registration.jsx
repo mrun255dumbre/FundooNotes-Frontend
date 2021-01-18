@@ -6,7 +6,7 @@ import userService from '../services/user-service';
 import { AppContext } from '../utils/AppContext';
 
 const Registration = (props) => {   
-    const {user, setUser} = useContext(AppContext);
+    const {user, handleClick} = useContext(AppContext);
     const {history} = props;
     let initialValue = {
         username: '',
@@ -90,7 +90,13 @@ const Registration = (props) => {
             } else{
                 window.alert(response.data.message);
             }
-        })  
+        }).catch((error) => {
+            if (error.response){
+              handleClick(error.response.data.data);
+            }  
+            else
+              handleClick("Please try again");
+          })   
     }       
     return (
         <>
@@ -104,22 +110,22 @@ const Registration = (props) => {
                     <h2>Sign Up</h2>
                     <div className="formContent">
                         <div className="row-content">
-                            <input type="text" name="username" value={registrationData.username} onChange={event => {setRegistrationData({...registrationData, username:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="text" name="username" value={registrationData.username} onChange={event => {setRegistrationData({...registrationData, username:event.target.value})}} placeholder=" " required/>
                             <label>User Name</label>
                             <div className="error">{registrationData.error.username}</div>
                         </div>
                         <div className="row-content">
-                            <input type="password" name="password" value={registrationData.password} onChange={event => {setRegistrationData({...registrationData, password:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="password" name="password" value={registrationData.password} onChange={event => {setRegistrationData({...registrationData, password:event.target.value})}} placeholder=" " required/>
                             <label>Password</label>
                             <div className="error">{registrationData.error.password}</div>
                         </div>
                         <div className="row-content">
-                            <input type="email" name="email" value={registrationData.email} onChange={event => {setRegistrationData({...registrationData, email:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="email" name="email" value={registrationData.email} onChange={event => {setRegistrationData({...registrationData, email:event.target.value})}} placeholder=" " required/>
                             <label>Email</label>
                             <div className="error">{registrationData.error.email}</div>
                         </div>
                         <div className="row-content">
-                            <input type="tel" name="phoneNumber" value={registrationData.phoneNumber} onChange={event => {setRegistrationData({...registrationData, phoneNumber:event.target.value})}} placeholder=" " required/>
+                            <input className="input" type="tel" name="phoneNumber" value={registrationData.phoneNumber} onChange={event => {setRegistrationData({...registrationData, phoneNumber:event.target.value})}} placeholder=" " required/>
                             <label>Phone Number</label>  
                             <div className="error">{registrationData.error.phoneNumber}</div>
                         </div>

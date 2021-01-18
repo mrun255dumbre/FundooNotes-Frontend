@@ -16,7 +16,7 @@ const ResetPassword = (props) => {
     }
     const [userData, setUserData] = useState(initialValue);
     const { history } = props;
-    const {user, setUser} = useContext(AppContext);
+    const {user, handleClick} = useContext(AppContext);
 
     useEffect(()=>{
         if(user){
@@ -65,8 +65,13 @@ const ResetPassword = (props) => {
             } else {
                 window.alert("Unable to update password");
             }
-        })
-
+        }).catch((error) => {
+            if (error.response) {
+              handleClick(error.response.data.data);
+            }  
+            else
+              handleClick("Please try again");
+          })
     }
     
     return (
@@ -81,12 +86,12 @@ const ResetPassword = (props) => {
                     <h2>Reset Password</h2>
                     <div className="formContent">
                         <div className="row-content">
-                            <input type="password" name="email" value={userData.password || ''} onChange={event => { setUserData({ ...userData, password: event.target.value }) }} placeholder=" " required />
+                            <input className="input" type="password" name="email" value={userData.password || ''} onChange={event => { setUserData({ ...userData, password: event.target.value }) }} placeholder=" " required />
                             <label>New Password</label>
                             <div className="error">{userData.error.password}</div>
                         </div>
                         <div className="row-content">
-                            <input type="password" name="email" value={userData.confirmPassword || ''} onChange={event => { setUserData({ ...userData, confirmPassword: event.target.value }) }} placeholder=" " required />
+                            <input className="input" type="password" name="email" value={userData.confirmPassword || ''} onChange={event => { setUserData({ ...userData, confirmPassword: event.target.value }) }} placeholder=" " required />
                             <label>Confirm Password</label>
                             <div className="error">{userData.error.confirmPassword}</div>
                         </div>
