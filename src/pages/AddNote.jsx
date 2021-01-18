@@ -1,15 +1,16 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React from 'react';
 import { Card, InputBase, Button, createMuiTheme, MuiThemeProvider } from '@material-ui/core/';
-import Chip from '@material-ui/core/Chip';
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import unpin from '../assets/icons/pin.svg';
-import pin from '../assets/icons/unpin.svg';
-import unarchive from '../assets/icons/unarchive.svg';
-import archive from '../assets/icons/archive.svg';
-import trash from '../assets/icons/trash.svg';
-import more from '../assets/icons/more.svg';
-import noteService from '../services/note-service'
+import Unpin from '../assets/icons/pin.svg';
+import Pin from '../assets/icons/unpin.svg';
+import Archive from '@material-ui/icons/ArchiveOutlined';
+import Unarchive from '@material-ui/icons/UnarchiveOutlined';
+import Trash from '@material-ui/icons/DeleteOutlined';
+import noteService from '../services/note-service';
 import "./style.scss";
+import Label from '@material-ui/icons/LabelOutlined';
+import Restore from '@material-ui/icons/RestoreFromTrash';
+
 const theme = createMuiTheme({
     overrides: {
         MuiChip: {
@@ -34,9 +35,9 @@ export default class AddNote extends React.PureComponent {
             noteId: '',
             title: '',
             description: '',
-            pin: 0,
-            archive: 0,
-            trash: 0,
+            isPin: 0,
+            isArchive: 0,
+            isTrash: 0,
         };
         this.handleTakeNote = this.handleTakeNote.bind(this);
     }
@@ -46,10 +47,9 @@ export default class AddNote extends React.PureComponent {
             noteId: '',
             title: this.state.title,
             description: this.state.description,
-            pin: this.state.pin,
-            color: this.state.color,
-            archive: this.state.archive,
-            trash: this.state.trash
+            isPin: this.state.isPin,
+            isArchive: this.state.isArchive,
+            isTrash: this.state.isTrash
         }
         if ((Note.title !== '' || Note.description !== '')) {
             Note = this.sendNote(Note);
@@ -58,25 +58,27 @@ export default class AddNote extends React.PureComponent {
                 noteId: '',
                 title: '',
                 description: '',
-                pin: 0,
-                archive: 0,
-                trash: 0
+                isPin: 0,
+                isArchive: 0,
+                isTrash: 0
             });
+            console.log("pin"+Note.isPin+"archive"+Note.archive);
         }
         else {
             this.setState({
                 active: !this.state.active,
-                pin: 0,
-                archive: 0,
-                trash: 0
+                isPin: 0,
+                isArchive: 0,
+                isTrash: 0
             });
         }
     }
 
     sendNote = (note) => {
+        console.log("pin",note);
         noteService.createNote(note).then(response => {
+            console.log("note response",response);
             if (response.status === 200) {
-                //alert("note Created");
                 note.noteId = response.data.noteId;
                 this.props.getNoteData();
             }
@@ -106,14 +108,13 @@ export default class AddNote extends React.PureComponent {
 
     handlePin = () => {
         this.setState({
-            pin: this.state.pin === 1 ? 0 : 1
-
+            isPin: this.state.isPin === 1 ? 0 : 1
         });
     }
 
     handlearchive = () => {
         this.setState({
-            archive: 1,
+            isArchive: 1,
         }, () => {
             this.handleNewNote('Note archive');
             console.log('archive', this.state);
@@ -127,28 +128,26 @@ export default class AddNote extends React.PureComponent {
                     <div className='note-top-div'>
                         <InputBase name='title' fullWidth placeholder='Title' onChange={this.handleInput} />
                         <div className='note-icon-pin' role='button' onClick={this.handlePin} >
-                            <img src={this.state.pin === 1 ? pin : unpin} alt="" />
+                            <img src={this.state.isPin === 1 ? Pin : Unpin} alt="" />
                         </div>
                     </div>
                     <InputBase name='description' multiline fullWidth placeholder='Take a note..' onChange={this.handleInput} />
                     <div className='takenote-bottom-icons-div'>
                         <div className="take-note-icon-div">
-                            <div className='note-icon-div' role='Button' onClick={this.handlearchive}>
-                                <img src={this.state.archive === 1 ? trash : trash} alt="" />
+                            <div className='note-icon-div' role='Button' onClick={this.handletrash}>
+                                {this.state.isTrash === 1 ? <Restore/> : <Trash/>}
                             </div>
                             <div className='note-icon-div' role='Button' onClick={this.handlearchive}>
-                                <img src={this.state.archive === 1 ? unarchive : archive} alt="" />
+                                {this.state.isArchive === 1 ? <Unarchive/> : <Archive/>}
                             </div>
                             <div className='note-icon-div' role='Button'>
-                                <img src={more} alt="" />
+                                <Label/>
                             </div>
                         </div>    
                         <Button className='card-button-close' component="span" onClick={this.handleTakeNote}>
                             Close
                         </Button>
                     </div>
-
-
                 </Card>
             </ClickAwayListener>
         </MuiThemeProvider>

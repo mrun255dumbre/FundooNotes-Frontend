@@ -20,7 +20,6 @@ import SearchBar from 'material-ui-search-bar';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import listview from '../assets/icons/listview.svg';
 import gridview from '../assets/icons/gridview.svg';
-import SettingsOutlinedIcon from '@material-ui/icons/SettingsOutlined';
 import { AppContext } from '../utils/AppContext';
 import { NavLink, useHistory } from "react-router-dom";
 import { menu } from '../utils/menu';
@@ -188,8 +187,6 @@ const ThemeWrapper = ({ children }) => {
           <div className={classes.toolbarIcons}>
             {viewType === ViewTypes.Grid ? <img src={listview} className={classes.toolbarIcon} onClick={changeViewType} /> : <img src={gridview} className={classes.toolbarIcon} onClick={changeViewType} />}
             <RefreshIcon className={classes.toolbarIcon} onClick={() => window.location.reload()} />
-            <SettingsOutlinedIcon className={classes.toolbarIcon} />
-
             <div className={classes.userProfile} onClick={clearUserData}>{user && user.username && user.username.charAt(0).toUpperCase()}</div>
           </div>
         </Toolbar>
