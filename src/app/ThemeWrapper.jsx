@@ -174,6 +174,7 @@ const ThemeWrapper = ({ children }) => {
 
   const currentMenu = menu.find(item => item.key === selectedMenu);
   const pageHeader = currentMenu && (currentMenu.key === menu[0].key ? null : currentMenu.label);
+  const editLabelIndex = menu.findIndex(item => item.key === 'menu_edit_label');
 
   return (
     <div className={classes.root}>
@@ -202,7 +203,9 @@ const ThemeWrapper = ({ children }) => {
             </>
           }
           <SearchBar className={classes.searchBar}
-            onChange={() => { }}
+            onChange={text => {
+              text.length > 2 && history.push(`/search/${text}`);
+            }}
             onRequestSearch={() => console.log('onRequestSearch')} />
           <div className={classes.toolbarIcons}>
             {viewType === ViewTypes.Grid ? <img src={listview} className={classes.toolbarIcon} onClick={changeViewType} /> : <img src={gridview} className={classes.toolbarIcon} onClick={changeViewType} />}
@@ -231,8 +234,8 @@ const ThemeWrapper = ({ children }) => {
         </div>
         <Divider />
         <List>
-          {menu.map(({ key, label, link, icon: Icon, nonLink }) => (
-            <ListItem
+          {menu.map(({ key, label, link, icon: Icon, nonLink }, i) => (
+            i < editLabelIndex && <ListItem
               className={clsx({
                 [classes.selectedMenu]: selectedMenu === key
               })}
@@ -262,6 +265,25 @@ const ThemeWrapper = ({ children }) => {
               to={`/label/${labelId}`}>
               <ListItemIcon><LabelOutlinedIcon /></ListItemIcon>
               <ListItemText primary={labelName} />
+            </ListItem>
+          ))}
+          {menu.map(({ key, label, link, icon: Icon, nonLink }, i) => (
+            i >= editLabelIndex && <ListItem
+              className={clsx({
+                [classes.selectedMenu]: selectedMenu === key
+              })}
+              button
+              key={key}
+              component={nonLink ? 'div' : LinkBtn}
+              onClick={() => {
+                setSelectedMenu(key)
+                if (nonLink) {
+                  seLabelDialogVisibility(true);
+                }
+              }}
+              to={link || ""}>
+              <ListItemIcon><Icon /></ListItemIcon>
+              <ListItemText primary={label} />
             </ListItem>
           ))}
         </List>

@@ -255,7 +255,7 @@ const NoteComponent = props => {
                             <Grid key={label.labelId} item xs={12} md={12}>
                                 <Checkbox
                                     checked={getLabelCheck(label.labelId)}
-                                    onChange={() => handleAddLabel(label)}
+                                    onChange={event => event.target.checked ? handleAddLabel(label): removeLabel(label)}
                                     name="checkedF"
                                     color="default"
                                 />

@@ -60,6 +60,7 @@ export default class EditLabelsDialog extends React.Component {
         labelService.deleteLabel(label.labelId).then(() => {
             this.props.updateLabels();
             this.handleCloseEditor();
+            window.location.reload()
         })
 
     }
