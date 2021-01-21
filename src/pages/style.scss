@@ -48,7 +48,7 @@ body{
   }
   
   .card-button-close{
-    flex: 1;
+    
     justify-content: flex-end !important;
     float: right;
   }
@@ -142,7 +142,19 @@ body{
     -webkit-transition-timing-function: ease-in;
     transition-timing-function: ease-in;
   }
+
+  .add-label-div{
+    cursor: pointer;
+    padding : 2px 4px ;
+  }
+  .add-label-div:hover{
+    background: rgba(0,0,0,0.1);
+  }
  
+  .MuiChip-deleteIcon{
+    margin-right: 0px;
+  }
+
   @media only screen and (max-width: 780px ) {
     .notes-div {
         width: 500px;

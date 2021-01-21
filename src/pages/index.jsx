@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import { NotFound } from "../app/NotFound";
 import { ProtectedRoute } from "../common/ProtectedRoute";
 import { Archived } from "./Archived";
+import { LabelList } from "./LabelList";
 import { Note } from "./Note";
 import { Trash } from "./Trash";
 
@@ -12,7 +13,8 @@ const InnerRouting = () => {
             <ProtectedRoute exact path="/" component={Note} />
             <ProtectedRoute exact path="/archived" component={Archived} />
             <ProtectedRoute exact path="/trash" component={Trash} />
-            
+            <ProtectedRoute exact path="/label/:labelId?" component={LabelList} />
+
             <Route component={NotFound} />
         </Switch>
     );

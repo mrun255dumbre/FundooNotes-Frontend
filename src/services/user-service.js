@@ -19,6 +19,10 @@ class UserService {
     async resetPassword(token, password) {
         return await AxiosService.putService(`${this.baseUrl}resetpassword/`+token, { token, password });
     }
+
+    async getUser() {
+        return await AxiosService.getService(`${this.baseUrl}`);
+    }
 }
 
 export default new UserService();

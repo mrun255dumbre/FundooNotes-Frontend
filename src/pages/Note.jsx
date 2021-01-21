@@ -3,6 +3,7 @@ import AddNote from './AddNote';
 import { NoteComponent } from '../components/NoteComponent';
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import noteService from '../services/note-service';
+import labelService from '../services/label-service';
 import { AppContext } from '../utils/AppContext';
 import { ViewTypes } from '../utils/constants';
 
@@ -19,10 +20,25 @@ const Note = () => {
     const classes = useStyles();
     const { user, viewType } = useContext(AppContext);
     const [notes, setNotes] = useState([]);
+    const [labelsLookup, setLabelsLookup] = useState([]);
 
     const getNoteData = () => {
-        noteService.getNote().then(data => {
-            setNotes(data.data);
+        noteService.getNote().then(noteResponse => {
+            labelService.getLabel().then(labelResponse => {
+                let mergedResponse = [];
+                noteResponse.data.forEach(n => {
+                    let newNoteObject = { ...n, labels: [] };
+                    labelResponse.data.forEach(l => {
+                        let isNoteInLabel = l.listNotes.some(item => item.noteId === n.noteId)
+                        if (isNoteInLabel) {
+                            newNoteObject = { ...newNoteObject, labels: [...newNoteObject.labels, l] }
+                        }
+                    })
+                    mergedResponse = [...mergedResponse, newNoteObject];
+                })
+                setNotes(mergedResponse);
+                setLabelsLookup(labelResponse.data);
+            })
         });
     }
 
@@ -57,6 +73,8 @@ const Note = () => {
                                         trash={note.trash}
                                         archive={note.archive}
                                         getNoteData={getNoteData}
+                                        labelsLookup={labelsLookup}
+                                        labels={note.labels}
                                     />
                                 </Grid>
                             )}
@@ -75,13 +93,15 @@ const Note = () => {
                                 trash={note.trash}
                                 archive={note.archive}
                                 getNoteData={getNoteData}
+                                labelsLookup={labelsLookup}
+                                labels={note.labels}
                             />
                         </Grid>
                     )}
                 </Grid>
             </Grid>
         </Grid>
-        
+
     );
 }
 

@@ -62,7 +62,6 @@ export default class AddNote extends React.PureComponent {
                 isArchive: 0,
                 isTrash: 0
             });
-            console.log("pin"+Note.isPin+"archive"+Note.archive);
         }
         else {
             this.setState({
@@ -75,7 +74,6 @@ export default class AddNote extends React.PureComponent {
     }
 
     sendNote = (note) => {
-        console.log("pin",note);
         noteService.createNote(note).then(response => {
             console.log("note response",response);
             if (response.status === 200) {
@@ -117,7 +115,14 @@ export default class AddNote extends React.PureComponent {
             isArchive: 1,
         }, () => {
             this.handleNewNote('Note archive');
-            console.log('archive', this.state);
+        });
+    }
+
+    handletrash = () => {
+        this.setState({
+            isTrash: 1,
+        }, () => {
+            this.handleNewNote('Note trash');
         });
     }
 

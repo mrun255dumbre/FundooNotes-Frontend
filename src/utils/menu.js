@@ -1,6 +1,7 @@
 import EmojiObjectsOutlinedIcon from '@material-ui/icons/EmojiObjectsOutlined';
 import ArchiveOutlinedIcon from '@material-ui/icons/ArchiveOutlined';
 import DeleteOutlineOutlinedIcon from '@material-ui/icons/DeleteOutlineOutlined';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 
 export const menu = [
     {
@@ -8,6 +9,12 @@ export const menu = [
         label: "Notes",
         link: "/",
         icon: () => <EmojiObjectsOutlinedIcon />
+    },
+    {
+        key: "menu_edit_label",
+        label: "Edit Label",
+        nonLink: true,
+        icon: () => <EditOutlinedIcon />
     },
     {
         key: "menu_archive",

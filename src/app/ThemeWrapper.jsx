@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
@@ -24,6 +24,10 @@ import { AppContext } from '../utils/AppContext';
 import { NavLink, useHistory } from "react-router-dom";
 import { menu } from '../utils/menu';
 import { ViewTypes } from '../utils/constants';
+import userService from '../services/user-service';
+import EditLabelsDialog from '../components/EditLabels';
+import labelService from '../services/label-service';
+import LabelOutlinedIcon from '@material-ui/icons/LabelOutlined';
 
 const drawerWidth = 240;
 
@@ -49,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     }),
   },
   menuButton: {
-    marginRight: 36,
+    marginRight: 10,
   },
   hide: {
     display: 'none',
@@ -92,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
   searchBar: {
     marginLeft: 20,
     width: '50%',
-    backgroundColor: "#eeeeee"
+    backgroundColor: "#f1f3f4"
   },
   toolbarIcon: {
     marginLeft: 40
@@ -130,6 +134,22 @@ const ThemeWrapper = ({ children }) => {
   const { user, logout, viewType, setViewType } = useContext(AppContext);
   const [selectedMenu, setSelectedMenu] = useState(menu[0].key)
   let history = useHistory();
+  const [username, setUsername] = React.useState(false);
+  const [labels, setLabels] = useState([]);
+  const [labelDialogVisibility, seLabelDialogVisibility] = useState(false);
+
+  const updateLabels = () => {
+    labelService.getLabel().then(labelsResponse => {
+      setLabels(labelsResponse.data);
+    })
+  }
+
+  useEffect(() => {
+    userService.getUser().then(response => {
+      setUsername(response.data.data);
+      updateLabels();
+    })
+  }, [user])
 
   const handleDrawerOpen = () => {
     setOpen(!open);
@@ -153,7 +173,7 @@ const ThemeWrapper = ({ children }) => {
   }
 
   const currentMenu = menu.find(item => item.key === selectedMenu);
-  const pageHeader = currentMenu.key === menu[0].key ? null : currentMenu.label;
+  const pageHeader = currentMenu && (currentMenu.key === menu[0].key ? null : currentMenu.label);
 
   return (
     <div className={classes.root}>
@@ -187,7 +207,7 @@ const ThemeWrapper = ({ children }) => {
           <div className={classes.toolbarIcons}>
             {viewType === ViewTypes.Grid ? <img src={listview} className={classes.toolbarIcon} onClick={changeViewType} /> : <img src={gridview} className={classes.toolbarIcon} onClick={changeViewType} />}
             <RefreshIcon className={classes.toolbarIcon} onClick={() => window.location.reload()} />
-            <div className={classes.userProfile} onClick={clearUserData}>{user && user.username && user.username.charAt(0).toUpperCase()}</div>
+            <div className={classes.userProfile} onClick={clearUserData}>{username && username.charAt(0).toUpperCase()}</div>
           </div>
         </Toolbar>
       </AppBar>
@@ -211,18 +231,37 @@ const ThemeWrapper = ({ children }) => {
         </div>
         <Divider />
         <List>
-          {menu.map(({ key, label, link, icon: Icon }) => (
+          {menu.map(({ key, label, link, icon: Icon, nonLink }) => (
             <ListItem
               className={clsx({
                 [classes.selectedMenu]: selectedMenu === key
               })}
               button
               key={key}
-              component={LinkBtn}
-              onClick={() => setSelectedMenu(key)}
+              component={nonLink ? 'div' : LinkBtn}
+              onClick={() => {
+                setSelectedMenu(key)
+                if (nonLink) {
+                  seLabelDialogVisibility(true);
+                }
+              }}
               to={link || ""}>
               <ListItemIcon><Icon /></ListItemIcon>
               <ListItemText primary={label} />
+            </ListItem>
+          ))}
+          {labels.map(({ labelId, labelName }) => (
+            <ListItem
+              className={clsx({
+                [classes.selectedMenu]: selectedMenu === `${labelId}`
+              })}
+              button
+              key={`${labelId}`}
+              component={LinkBtn}
+              onClick={() => setSelectedMenu(`${labelId}`)}
+              to={`/label/${labelId}`}>
+              <ListItemIcon><LabelOutlinedIcon /></ListItemIcon>
+              <ListItemText primary={labelName} />
             </ListItem>
           ))}
         </List>
@@ -231,6 +270,11 @@ const ThemeWrapper = ({ children }) => {
         <div className={classes.toolbar} />
         {children}
       </main>
+      <EditLabelsDialog
+        open={labelDialogVisibility}
+        labels={labels}
+        seLabelDialogVisibility={seLabelDialogVisibility}
+        updateLabels={updateLabels} />
     </div>
   );
 }

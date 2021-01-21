@@ -4,17 +4,19 @@ import { AppContext } from '../utils/AppContext';
 import { NoteComponent } from '../components/NoteComponent';
 import noteService from '../services/note-service';
 import labelService from '../services/label-service';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
 
 })
 )
 
-const Trash = props => {
+const LabelList = props => {
     const classes = useStyles();
     const { user } = useContext(AppContext);
     const [notes, setNotes] = useState([]);
     const [labelsLookup, setLabelsLookup] = useState([]);
+    const { labelId = '0' } = useParams();
 
     const getNoteData = () => {
         noteService.getNote().then(noteResponse => {
@@ -41,7 +43,7 @@ const Trash = props => {
     }, [user])
 
     return <Grid container spacing={3}>
-        {notes.filter(item => item.trash).map(note =>
+        {notes.filter(item => item.labels.some(label => `${label.labelId}` === labelId)).map(note =>
             <Grid item xs={6} md={3} key={`${note.noteId}`}>
                 <NoteComponent
                     noteId={note.noteId}
@@ -59,4 +61,4 @@ const Trash = props => {
     </Grid>;
 }
 
-export { Trash };
+export { LabelList };
